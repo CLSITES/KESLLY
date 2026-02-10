@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Honda Revemar — Edição Exclusiva</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --red-honda: #c8102e;
+            --gold-premium: #d4af37;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --card-white: #ffffff;
+        }
+
+        * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: #0b0b0b;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* FUNDO DE FOGOS EM LOOP */
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            filter: blur(8px);
+            opacity: 0.4;
+        }
+
+        header {
+            background: rgba(0,0,0,0.9);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--red-honda);
+            position: sticky;
+            top: 0; z-index: 100;
+        }
+
+        .logo-campanha {
+            height: 45px;
+            filter: drop-shadow(0 0 10px var(--red-honda));
+        }
+
+        /* AREA DO VENDEDOR NO TOPO */
+        .vendedor-topo {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 40px 5% 10px 5%;
+            position: relative;
+        }
+
+        .vendedor-moldura {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid var(--gold-premium);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            background: #222;
+            padding: 3px;
+            animation: brilhoPerfil 3s infinite alternate;
+        }
+
+        .vendedor-moldura img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .vendedor-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .vendedor-info .cargo {
+            font-size: 0.8rem;
+            color: var(--gold-premium);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .vendedor-info .nome-vendedor {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .sparkle {
+            position: absolute;
+            font-size: 20px;
+            animation: girarSparkle 2s infinite linear;
+        }
+
+        @keyframes girarSparkle {
+            from { transform: rotate(0deg) scale(1); opacity: 1; }
+            to { transform: rotate(360deg) scale(1.2); opacity: 0.5; }
+        }
+
+        @keyframes brilhoPerfil {
+            from { border-color: var(--gold-premium); box-shadow: 0 0 10px var(--gold-premium); }
+            to { border-color: #fff; box-shadow: 0 0 25px var(--gold-premium); }
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+        .section-title {
+            text-align: center;
+            font-weight: 900;
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            margin: 40px 0 60px 0;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            color: #fff;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            padding-bottom: 20px;
+        }
+
+        .moto-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .moto-card {
+            background: var(--card-white);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid #333;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .moto-stage {
+            height: 250px;
+            background: #fff;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .placa-ano {
+            position: absolute;
+            top: 15px; left: 15px;
+            background: var(--red-honda);
+            color: white;
+            padding: 5px 15px;
+            font-weight: 800;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            z-index: 10;
+        }
+
+        .decoracao-pendurada {
+            position: absolute;
+            top: 0; right: 20px;
+            width: 60px;
+            animation: swing 3s ease-in-out infinite;
+            transform-origin: top;
+            z-index: 5;
+        }
+
+        @keyframes swing {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
+
+        .moto-img {
+            width: 85%;
+            z-index: 3;
+            filter: drop-shadow(0 15px 15px rgba(0,0,0,0.1));
+            transition: opacity 0.2s;
+        }
+
+        .burnout-smoke {
+            position: absolute;
+            bottom: 40px; left: 50%;
+            width: 100px; height: 40px;
+            background: radial-gradient(circle, rgba(200,200,200,0.8) 0%, transparent 70%);
+            filter: blur(10px);
+            opacity: 0;
+            z-index: 2;
+        }
+
+        .pneu-mark {
+            position: absolute;
+            bottom: 50px; left: 45%;
+            width: 0; height: 8px;
+            background: #222;
+            border-radius: 10px;
+            opacity: 0.6;
+            z-index: 1;
+        }
+
+        .animate-drive { 
+            animation: driveLoop 1.6s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards; 
+        }
+        
+        @keyframes driveLoop {
+    0% { 
+        transform: translateX(0) scale(1); 
+        opacity: 1; 
+    }
+    /* Saída: Ela dá uma leve ré e sai disparada */
+    10% { 
+        transform: translateX(-30px) rotate(-2deg); 
+    } 
+    45% { 
+        transform: translateX(130vw) scale(1); 
+        opacity: 1; 
+    }
+    /* Invisível: Momento da troca de cor do outro lado */
+    46% { 
+        opacity: 0; 
+        transform: translateX(-130vw) scale(1); 
+    }
+    48% { 
+        opacity: 1; 
+    }
+    /* Entrada: Ela vem rápido da esquerda e vai parando suavemente */
+    100% { 
+        transform: translateX(0) scale(1); 
+        opacity: 1; 
+    }
+}
+
+        .card-info { padding: 25px; color: #111; text-align: center; }
+        .moto-name { font-size: 1.5rem; font-weight: 900; margin: 0; }
+        .moto-price { color: var(--red-honda); font-size: 1.2rem; font-weight: 700; margin: 10px 0; }
+
+        .btn-box { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-action {
+            flex: 1; padding: 15px; border-radius: 8px;
+            text-decoration: none; font-weight: 800;
+            text-transform: uppercase; font-size: 0.75rem;
+            transition: 0.3s; text-align: center;
+        }
+        .btn-fin { background: var(--red-honda); color: white; }
+        .btn-cons { background: #000; color: white; }
+
+        .agente-ia {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 16px;
+            background: linear-gradient(135deg,#25D366,#1ebe5d);
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 20px 45px rgba(0,0,0,.35);
+            animation: flutuar 2.5s ease-in-out infinite;
+            z-index: 9999;
+        }
+        .agente-foto { width: 52px; height: 52px; border-radius: 50%; border: 3px solid #fff; }
+        .agente-texto strong { color: #fff; font-size: 14px; display: block; }
+        .agente-texto span { color: #eafff3; font-size: 12px; }
+
+        @keyframes flutuar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+        @media(max-width:768px){
+            .vendedor-info .nome-vendedor { font-size: 1.3rem; }
+            .vendedor-moldura { width: 80px; height: 80px; }
+            .agente-texto { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<header>
+    <img src="" id="logo-campanha" class="logo-campanha" alt="Honda Campanha">
+    <div style="text-align: right">
+        <div style="font-weight: 900; color: var(--red-honda)">REVEMAR HONDA</div>
+        <div id="tema-label" style="font-size: 0.7rem; color: #888"></div>
+    </div>
+</header>
+
+<div class="vendedor-topo">
+    <div class="vendedor-moldura">
+        <span class="sparkle" style="top:-10px; right:-10px;">✨</span>
+        <span class="sparkle" style="bottom:-5px; left:-10px; animation-delay: 1s;">🎉</span>
+        <img src="https://image2url.com/images/1763321623834-3529dfca-89a1-481c-9b53-be3324834b67.jpg" alt="Vendedor">
+    </div>
+    <div class="vendedor-info">
+        <span class="cargo">Consultor de Vendas</span>
+        <span class="nome-vendedor">Lucas Honda</span>
+    </div>
+</div>
+
+<main class="container">
+    <h1 class="section-title" id="titulo-principal"></h1>
+    <div class="moto-grid" id="motoGrid"></div>
+</main>
+
+<a class="agente-ia"
+   href="https://agent.vendedoria.acelerabit.com/site-vendedor?vendedor_image=https://image2url.com/images/1763321623834-3529dfca-89a1-481c-9b53-be3324834b67.jpg&vendedor_name=Lucas da Honda&vendedor_whatsapp=5594992781498&vendedor_id=9115&vendedor_concessionaria=REVEMAR&region_id=1"
+   target="_blank"
+   title="Fale comigo agora">
+
+    <img class="agente-foto"
+         src="https://image2url.com/images/1763321623834-3529dfca-89a1-481c-9b53-be3324834b67.jpg"
+         alt="lucas da Honda">
+
+    <div class="agente-texto">
+        <strong>lucas da Honda</strong>
+        <span>Fale comigo agora</span>
+    </div>
+</a>
+
+<script>
+const CONFIG_TEMA = {
+    nomeCampanha: "FELIZ ANO NOVO 2026",
+    tituloSite: "Ofertas de Janeiro Revemar",
+    logoURL: "https://image2url.com/r2/bucket2/images/1767636595479-3f4280da-bfe1-4fc5-8128-1ca92c4073c6.png",
+    enfeiteIcone: "https://cdn-icons-png.flaticon.com/512/3893/3893071.png",
+    anoVigente: "2026"
+};
+
+const MOTOS = [
+{
+  id:'POP110', nome:'POP 110i ES', ano:2026, precoAvista:'R$ 17.257',
+  imgs:[
+    'https://www.honda.com.br/motos/sites/hda/files/2025-08/Imagem-Home-Pop-110i-Es-Vermelho-Fighting-Red_0.webp',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/pop-branca-lateral.png',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/pop-preta-3_4fd.png'
+  ]
+},
+
+{
+  id:'BIZ125ES', nome:'BIZ 125 ES', ano:2026, precoAvista:'R$ 20.846',
+  imgs:[
+    'https://www.honda.com.br/motos/sites/hda/files/2025-08/Imagem-Home-Honda-Biz-125-ES-Preto-Black_0.webp',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/biz-125-es-vermelho-maceio-red-lado-a-555-x-372.png',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/biz-125-es-branco-lado-a-350-x280.png'
+  ]
+},
+
+{
+  id:'BIZ125EX', nome:'BIZ 125 EX', ano:2026, precoAvista:'R$ 25.266',
+  imgs:[
+    'https://www.honda.com.br/motos/sites/hda/files/2025-08/Imagem-Home-Biz-125-EX-Branco-Perolizado-Pearl-Hakuji-White_0.webp',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/biz-125-ex-azul-b-555-x372_0.png',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/biz-125-ex-azul-frente-555-x372_2.png'
+  ]
+},
+
+{
+  id:'ELITE125', nome:'Elite 125', ano:2026, precoAvista:'R$ 19.362',
+  imgs:[
+    'https://www.honda.com.br/motos/sites/hda/files/2025-08/Imagem-Home-Elite-125-Vermelho-Maceio-Red_0.webp',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/elite-lateral-3_0.png',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/moto-prata-honda_direita-lado_0.png',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/elite-lateral_0_0.png'
+  ]
+},
+
+{
+  id:'PCX', nome:'PCX CBS', ano:2026, precoAvista:'R$ 24.787',
+  imgs:['https://www.honda.com.br/motos/sites/hda/files/2025-08/imagem-home-honda-pcx-branco_0.webp']
+},
+
+{
+  id:'PCXABS', nome:'PCX ABS', ano:2026, precoAvista:'R$ 26.996',
+  imgs:['https://image2url.com/r2/bucket3/images/1767705525933-5a8cc60a-5afb-45ee-bb02-4d1cc2699a64.png']
+},
+
+{
+  id:'HONADA_ADV', nome:'Honda ADV', ano:2026, precoAvista:'R$ 33.183',
+  imgs:[
+    'https://www.honda.com.br/motos/sites/hda/files/2025-08/Imagem-Home-Honda-ADV-Prata-Met%C3%A1lico_0.webp',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/honda-adv_-vermelha_lateral-2_0.png'
+  ]
+},
+
+{
+  id:'CG160START', nome:'CG 160 START', ano:2026, precoAvista:'R$ 25.308',
+  imgs:[
+    'https://www.honda.com.br/motos/sites/hda/files/2025-08/Imagem-home-visao-da-lateral-direita-da-honda-cg-160-start.webp',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/cg-160-start-vermelha-lateral.png',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/cg-160-start-preta-lateral.png'
+  ]
+},
+
+{
+  id:'CG160FAN', nome:'CG 160 FAN', ano:2026, precoAvista:'R$ 27.415',
+  imgs:[
+    'https://www.honda.com.br/motos/sites/hda/files/2025-08/Imagem-Home-Honda-CG-160-Fan-Vermelho-Perolizado.webp',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/preto-metalico-infinite-black-metallic-1.png',
+    'https://www.honda.com.br/motos/sites/hda/files/2025-08/Imagem-Home-Honda-CG-160-Fan-Prata-Met%C3%A1lico.webp'
+  ]
+},
+
+{
+  id:'CG160TITAN', nome:'CG 160 TITAN', ano:2026, precoAvista:'R$ 29.241',
+  imgs:[
+    'https://www.honda.com.br/motos/sites/hda/files/2025-08/Imagem-Home-Honda-CG-160-Titan-Cinza-Met%C3%A1lico.webp',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/cg-160-titan-vermelha-lateral.png',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/cg-160-titan-preta-lateral.png'
+  ]
+},
+
+{
+  id:'NXR160ABS', nome:'NXR 160 BROS ABS', ano:2026, precoAvista:'R$ 33.398',
+  imgs:[
+    'https://www.honda.com.br/motos/sites/hda/files/2025-08/Imagem-Home-Honda-NXR-160-Bros-ABS-Vermelho-Fighting-Red.webp',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/2_bros-cinza-lateral-abs.png'
+  ]
+},
+
+{
+  id:'NXR160BRS', nome:'NXR 160 BROS CBS', ano:2026, precoAvista:'R$ 32.111',
+  imgs:[
+    'https://www.honda.com.br/motos/sites/hda/files/2025-08/Imagem-Home-Honda-NXR-160-Bros-CBS-Azul-Universe-Blue.webp',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/bros-preta-3_4te-cbs-lado_5.png'
+  ]
+},
+
+{
+  id:'XRE190', nome:'XRE 190', ano:2026, precoAvista:'R$ 32.200',
+  imgs:['https://www.motopel.com.br/site/wp-content/uploads/2021/02/xre-190-azul.webp']
+},
+
+{
+  id:'XR300LT', nome:'XR 300L TORNADO', ano:2026, precoAvista:'R$ 39.998',
+  imgs:['https://www.motopel.com.br/site/wp-content/uploads/2021/02/XR-300L-Tornado.webp']
+},
+
+{
+  id:'CRF300F', nome:'CRF 300F', ano:2026, precoAvista:'R$ 31.164',
+  imgs:[
+    'https://www.motopel.com.br/site/wp-content/uploads/2025/08/capa-crf-300f.webp',
+    'https://www.honda.com.br/motos/sites/hda/files/2025-08/crf300f-cor-2.webp',
+    'https://www.honda.com.br/motos/sites/hda/files/2025-08/crf300f-cor-3.webp'
+  ]
+},
+
+{
+  id:'CB300FTWABS', nome:'CB 300F TWISTER ABS', ano:2026, precoAvista:'R$ 34.713',
+  imgs:[
+    'https://www.motopel.com.br/site/wp-content/uploads/2021/02/cb-300F-twister-azul.webp',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/lateral-vermelha_1.png'
+  ]
+},
+
+{
+  id:'CB300FTWCBS', nome:'CB 300F TWISTER CBS', ano:2026, precoAvista:'R$ 33.516',
+  imgs:[
+    'https://www.motopel.com.br/site/wp-content/uploads/2021/02/cb-300F-twister-cinza.webp',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/lateral-vermelha-1_0.png'
+  ]
+},
+
+{
+  id:'SAHARA300ABS', nome:'SAHARA 300 ABS', ano:2026, precoAvista:'R$ 40.645',
+  imgs:['https://www.honda.com.br/motos/sites/hda/files/2025-08/Imagem-Home-Sahara-300-Cinza-Met%C3%A1lico.webp']
+},
+
+{
+  id:'SAHARA300RALLY', nome:'SAHARA 300 RALLY', ano:2026, precoAvista:'R$ 41.249',
+  imgs:['https://www.honda.com.br/motos/sites/hda/files/2025-08/Imagem-Home-Sahara-300-Rally-Vermelho-Victory-Red.webp']
+},
+
+{
+  id:'SAHARA300ADV', nome:'SAHARA 300 ADV', ano:2026, precoAvista:'R$ 41.914',
+  imgs:['https://www.honda.com.br/motos/sites/hda/files/2025-08/Imagem-Home-Sahara-300-Adventure-Bege%20Met%C3%A1lico.webp']
+},
+
+{
+  id:'CB500HOR', nome:'CB 500 HORNET', ano:2026, precoAvista:'R$ 52.154',
+  imgs:[
+    'https://www.motopel.com.br/site/wp-content/uploads/2025/07/capa-hornet-500-2026-branca.webp',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/hornet-500_red_lateral_0.png',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/hornet-500_black_lateral_0.png'
+  ]
+},
+
+{
+  id:'NX500', nome:'NX 500', ano:2026, precoAvista:'R$ 55.285',
+  imgs:[
+    'https://www.motopel.com.br/site/wp-content/uploads/2025/07/capa-nx-500-2026-vermelha.webp',
+    
+  ]
+},
+
+{
+  id:'NC750X', nome:'NC 750X', ano:2026, precoAvista:'R$ 67.552',
+  imgs:[
+    'https://www.motopel.com.br/site/wp-content/uploads/2021/02/nc-750x-MT-prata.png.webp',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/base-honda-nc750x1115autocopy2_0.png'
+  ]
+},
+
+{
+  id:'CB1000R70', nome:'CB 1000R 70%', ano:2026, precoAvista:'R$ 92.775',
+  imgs:[
+    'https://www.motopel.com.br/site/wp-content/uploads/2021/02/cb-1000R-black-edition.png.webp',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/2023-cb1000r_ed_studio_red_rh-side_l_0.png'
+  ]
+},
+
+{
+  id:'CRF1100L', nome:'CRF 1100L AFRICA TWIN', ano:2026, precoAvista:'R$ 100.297',
+  imgs:[
+    'https://www.motopel.com.br/site/wp-content/uploads/2020/02/capa-africa-twin-mt.webp',
+    'https://d1qa0ax3fv1ims.cloudfront.net/catalogo_imagens/duas_rodas/crf_1100l_africa_twinmt_preto_fosco_hda_1-1.png'
+  ]
+}
+
+];
+
+document.getElementById('logo-campanha').src = CONFIG_TEMA.logoURL;
+document.getElementById('tema-label').innerText = CONFIG_TEMA.nomeCampanha;
+document.getElementById('titulo-principal').innerText = CONFIG_TEMA.tituloSite;
+
+function renderCards() {
+    const grid = document.getElementById('motoGrid');
+    MOTOS.forEach((m, index) => {
+        const card = document.createElement('div');
+        card.className = 'moto-card';
+        card.innerHTML = `
+            <div class="moto-stage" onclick="executarAnimacao(this, ${index})" data-current-img="0">
+                <div class="placa-ano">MODELO ${CONFIG_TEMA.anoVigente}</div>
+                <img src="${CONFIG_TEMA.enfeiteIcone}" class="decoracao-pendurada">
+                <div class="burnout-smoke"></div>
+                <div class="pneu-mark"></div>
+                <img src="${m.imgs[0]}" class="moto-img">
+            </div>
+            <div class="card-info">
+                <h3 class="moto-name">${m.nome}</h3>
+                <div class="moto-price">À vista ${m.precoAvista}</div>
+
+                <div class="btn-box">
+                    <a href="financiamento.html?moto=${m.id}" class="btn-action btn-fin">Financiar</a>
+                    <a href="Consórcio.html?moto=${m.id}" class="btn-action btn-cons">Consórcio</a>
+                </div>
+            </div>`;
+        grid.appendChild(card);
+    });
+}
+
+function executarAnimacao(stage, motoIndex) {
+    const motoImgElement = stage.querySelector('.moto-img');
+    const smoke = stage.querySelector('.burnout-smoke');
+    const mark = stage.querySelector('.pneu-mark');
+    const motoData = MOTOS[motoIndex];
+
+    if (motoImgElement.classList.contains('animate-drive')) return;
+
+    // Fumaça e Marca
+    smoke.style.opacity = "1";
+    mark.style.width = "120px";
+    mark.style.transition = "width 0.4s";
+
+    // Inicia Corrida
+    setTimeout(() => { 
+        motoImgElement.classList.add('animate-drive'); 
+        smoke.style.opacity = "0"; 
+    }, 500);
+
+    // TROCA A COR quando estiver fora da tela (aproximadamente 1.3s)
+    setTimeout(() => {
+        if(motoData.imgs.length > 1) {
+            let currentIdx = parseInt(stage.getAttribute('data-current-img'));
+            let nextIdx = (currentIdx + 1) % motoData.imgs.length;
+            
+            motoImgElement.src = motoData.imgs[nextIdx];
+            stage.setAttribute('data-current-img', nextIdx);
+        }
+    }, 1300);
+
+    // Reset da animação
+    setTimeout(() => { 
+        motoImgElement.classList.remove('animate-drive'); 
+        mark.style.width = "0"; 
+    }, 2800);
+}
+
+// CANVAS FOGOS
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+window.addEventListener('resize', resize);
+resize();
+
+class Particle {
+    constructor() { this.reset(); }
+    reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = canvas.height + 10;
+        this.vx = Math.random() * 2 - 1;
+        this.vy = -(Math.random() * 3 + 2);
+        this.size = Math.random() * 3 + 1;
+        this.color = `hsl(${Math.random() * 360}, 50%, 50%)`;
+        this.alpha = 1;
+    }
+    update() {
+        this.y += this.vy;
+        if (this.y < 150) this.alpha -= 0.01;
+        if (this.alpha <= 0) this.reset();
+    }
+    draw() {
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = this.color;
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+    }
+}
+for(let i=0; i<40; i++) particles.push(new Particle());
+function animateBG() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animateBG);
+}
+renderCards();
+animateBG();
+</script>
+</body>
+</html>
